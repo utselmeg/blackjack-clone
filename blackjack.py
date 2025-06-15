@@ -44,7 +44,7 @@ class Hand:
         self.cards.append(card)
 
     def get_value(self):
-        # count aces as 1, if the hand has an ace, then add 10 to hand value if it doesn't bust
+        # count aces as 1 if the hand has an ace, then add 10 to hand value if it doesn't bust
         hand_value = 0
         ace = False
         for c in self.cards:
@@ -90,7 +90,7 @@ class BlackjackGame:
 
     def deal(self):
         if self.in_play:
-            self.score -= 1  # player loses if they abandon round
+            self.score -= 1  # the player loses if they abandon the round
 
         self.deck = Deck()
         self.deck.shuffle()
@@ -121,7 +121,7 @@ class BlackjackGame:
         if not self.in_play:
             return
 
-        # if hand is in play, repeatedly hit dealer until his hand has value 17 or more
+        # if the hand is in play, repeatedly hit the dealer until his hand has value 17 or more
         while self.dealer_hand.get_value() < 17:
             self.dealer_hand.add_card(self.deck.deal_card())
 
