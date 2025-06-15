@@ -1,10 +1,8 @@
-# Blackjack
+"""
+Blackjack clone game
+"""
 
 import random
-
-in_play = True
-score = 1
-outcome = ""
 
 SUITS = ('C', 'S', 'H', 'D')
 RANKS = ('A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K')
@@ -80,47 +78,75 @@ class Deck:
             s += str(i) + " "
         return "Deck contains " + s
 
-def deal():
-    global score, outcome, in_play, deck, player_hand, dealer_hand
-    if in_play == True:
-        score -= 1    
-    deck = Deck()
-    player_hand = Hand()
-    dealer_hand = Hand()
-    deck.shuffle()
-    player_hand.add_card(deck.deal_card())
-    player_hand.add_card(deck.deal_card())
-    dealer_hand.add_card(deck.deal_card())
-    dealer_hand.add_card(deck.deal_card())  
-    in_play = True
 
-def hit():
-    global dealer_hand, player_hand, in_play, score, outcome
-    if in_play == True:
-    # if the hand is in play, hit the player
-        if player_hand.get_value() <= 21:
-            player_hand.add_card(deck.deal_card())
-    # if busted, assign a message to outcome, update in_play and score
-            if player_hand.get_value() > 21:
-                outcome = "You busted! Dealer wins!"
-                score -= 1
-                in_play = False
+class BlackjackGame:
+    def __init__(self):
+        self.deck = None
+        self.player_hand = None
+        self.dealer_hand = None
+        self.in_play = False
+        self.score = 0
+        self.outcome = ""
 
-def stand():
-    global player_hand, dealer_hand, score, in_play, outcome
-    # if hand is in play, repeatedly hit dealer until his hand has value 17 or more
-    if in_play == True:
-        while dealer_hand.get_value() < 17:
-            dealer_hand.add_card(deck.deal_card())
-    if dealer_hand.get_value() > 21:
-        outcome = "Dealer busted! You win!"
-        score += 1 
-    elif player_hand.get_value() > dealer_hand.get_value():
-        outcome = "You win!"
-        score += 1
-    elif player_hand.get_value() <= dealer_hand.get_value():
-        outcome = "Dealer wins!"
-        score -= 1
-    in_play = False   
+    def deal(self):
+        if self.in_play:
+            self.score -= 1  # player loses if they abandon round
 
-deal()
+        self.deck = Deck()
+        self.deck.shuffle()
+
+        self.player_hand = Hand()
+        self.dealer_hand = Hand()
+
+        self.player_hand.add_card(self.deck.deal_card())
+        self.player_hand.add_card(self.deck.deal_card())
+        self.dealer_hand.add_card(self.deck.deal_card())
+        self.dealer_hand.add_card(self.deck.deal_card())
+
+        self.in_play = True
+        self.outcome = "Hit or Stand?"
+
+    def hit(self):
+        if not self.in_play:
+            return
+
+        self.player_hand.add_card(self.deck.deal_card())
+
+        if self.player_hand.get_value() > 21:
+            self.in_play = False
+            self.outcome = "You have busted!"
+            self.score -= 1
+
+    def stand(self):
+        if not self.in_play:
+            return
+
+        # if hand is in play, repeatedly hit dealer until his hand has value 17 or more
+        while self.dealer_hand.get_value() < 17:
+            self.dealer_hand.add_card(self.deck.deal_card())
+
+        # TODO: replace with variables
+        # player_val = self.player_hand.get_value()
+        # dealer_val = self.dealer_hand.get_value()
+
+        if self.dealer_hand.get_value() > 21:
+            self.outcome = "Dealer busted! You win!"
+            self.score += 1
+        elif self.player_hand.get_value() > self.dealer_hand.get_value():
+            self.outcome = "You win!"
+            self.score += 1
+        elif self.player_hand.get_value() < self.dealer_hand.get_value():
+            self.outcome = "Dealer wins!"
+            self.score -= 1
+        else:
+            self.outcome = "It's a tie."
+        self.in_play = False
+
+    def get_game_state(self):
+        return {
+            "player_cards": self.player_hand.get_cards(),
+            "dealer_cards": self.dealer_hand.get_cards(),
+            "in_play": self.in_play,
+            "score": self.score,
+            "outcome": self.outcome
+        }
