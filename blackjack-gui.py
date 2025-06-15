@@ -56,17 +56,14 @@ def redraw():
 
 # button handlers
 def deal():
-    # print("deal button")
     game.deal()
     redraw()
 
 def hit():
-    # print("hit")
     game.hit()
     redraw()
 
 def stand():
-    # print("stand")
     game.stand()
     redraw()
 

@@ -125,17 +125,15 @@ class BlackjackGame:
         while self.dealer_hand.get_value() < 17:
             self.dealer_hand.add_card(self.deck.deal_card())
 
-        # TODO: replace with variables
-        # player_val = self.player_hand.get_value()
-        # dealer_val = self.dealer_hand.get_value()
-
-        if self.dealer_hand.get_value() > 21:
+        player_val = self.player_hand.get_value()
+        dealer_val = self.dealer_hand.get_value()
+        if dealer_val > 21:
             self.outcome = "Dealer busted! You win!"
             self.score += 1
-        elif self.player_hand.get_value() > self.dealer_hand.get_value():
+        elif player_val > dealer_val:
             self.outcome = "You win!"
             self.score += 1
-        elif self.player_hand.get_value() < self.dealer_hand.get_value():
+        elif player_val < dealer_val:
             self.outcome = "Dealer wins!"
             self.score -= 1
         else:
